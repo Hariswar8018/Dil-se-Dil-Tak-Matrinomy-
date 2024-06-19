@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyABeIkpCeyTlftf7YsTNJShcaKiaxD2Lpk</string>
+	<key>GCM_SENDER_ID</key>
+	<string>396243406354</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.heavenonthisearth.matrinomy</string>
+	<key>PROJECT_ID</key>
+	<string>adeota-94588</string>
+	<key>STORAGE_BUCKET</key>
+	<string>adeota-94588.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:396243406354:ios:e3985fd634d20fe4de12cb</string>
+</dict>
+</plist>
