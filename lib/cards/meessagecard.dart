@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:matrinomy/cards/chatbubble.dart';
 import 'package:matrinomy/cards/profile.dart';
+import 'package:matrinomy/notify.dart';
 import 'package:provider/provider.dart';
 
 import '../main_page/premium.dart';
@@ -45,6 +46,11 @@ class _ChatPageState extends State<ChatPage> {
         {
           "Mess": FieldValue.arrayUnion([yu]),
         });
+    await FirebaseFirestore.instance.collection("Users").doc(widget.user.uid).update(
+        {
+          "Mess": FieldValue.arrayUnion([yu]),
+        });
+    String userToken = widget.user.token; // Replace with the actual user's FCM token
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages(UserModel user3){
@@ -57,7 +63,6 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    UserModel? _user = Provider.of<UserProvider>(context).getUser;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -107,7 +112,7 @@ class _ChatPageState extends State<ChatPage> {
                   },
                 ),
               ),
-              _user!.premium? _ChatInput() : _ChatInputt(),
+              _ChatInput(),
             ],
           ),
         ),

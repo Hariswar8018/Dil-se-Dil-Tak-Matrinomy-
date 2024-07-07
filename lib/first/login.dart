@@ -206,7 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         .showSnackBar(
                                       SnackBar(
                                         content:
-                                        Text('Verification Failed '),
+                                        Text('${e}'),
                                         duration: Duration(seconds: 3),
                                       ),
                                     );
@@ -248,7 +248,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                         'Auto Retrieval Timeout. Verification ID: $verificationId');
                                   },
                                 );
+                            setState((){
+                              round = false ;
+                            });
                               } catch (e) {
+                            setState((){
+                              round = false ;
+                            });
                                 print(
                                     'Error sending verification code: $e');
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -259,6 +265,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 );
                               }
                             } else {
+                          setState((){
+                            round = false ;
+                          });
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text('Type 10 digit number'),
@@ -266,9 +275,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               );
                             }
-                        setState((){
-                          round = false ;
-                        });
+
                           }),
                     ),
                     SizedBox(

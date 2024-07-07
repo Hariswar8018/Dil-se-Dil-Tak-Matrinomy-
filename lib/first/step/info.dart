@@ -27,7 +27,7 @@ class Step1 extends StatefulWidget {
 class _Step1State extends State<Step1> {
 
   List l5 = [];
-  String drinkk = " ", smoke = " ", goall = " ", gen = " " , looki = " ", pic = " ";
+  String drinkk = " ", smoke = " ", goall = "Male", gen = "Male" , looki = "Male", pic = "";
 
  int activeStep = 0; // Initial step set to 5.
  int upperBound = 6; // upperBound MUST BE total number of icons minus 1.
@@ -157,6 +157,11 @@ class _Step1State extends State<Step1> {
   }
   /// Returns the next button
   bool going = false ;
+
+  bool checkin(){
+    return name.text.isNotEmpty && pic.isNotEmpty ;
+  }
+
   Widget nextButton() {
     return InkWell(
       onTap: ()  async {
@@ -168,7 +173,8 @@ class _Step1State extends State<Step1> {
           setState(() {
             activeStep ++ ;
           });
-        }else {
+        }
+        else if (checkin()){
           CollectionReference usersCollection = FirebaseFirestore.instance.collection('Users');
           String h = FirebaseAuth.instance.currentUser!.uid ;
           print("No");
@@ -189,11 +195,11 @@ class _Step1State extends State<Step1> {
               print("User's address: $address");
               print("uawe");
               String t = DateTime.now().toString();
-              UserModel hj = UserModel(Email: " ", Name: name.text,
+              UserModel hj = UserModel(Email: " ", Name: name.text, token : "",
                   uid: h, smoke: smoke, bday: _singleDatePickerValueWithDefaultValue[0].toString(), premium : false , phone : widget.phone,
                   weight: weight.text, height: height.text, follower: [], following: [],
-                  education: education.text, drink: drinkk, gender: gen,
-                  hobbies: l5, looking: looki, online : true, lastlogin : t,
+                  education: education.text, drink: drinkk, gender: gen,lastp:"2024-06-27 16:48:31.164244",
+                  hobbies: l5, looking: looki, online : true, lastlogin : "2024-06-27 16:48:31.164244",
                   s1 : " ", s2 : " ", s3 : " " , s4 : " ", s5 : " ", age1 : 18.0, age2 : 35.0, distance : 500,
                   relationship: goall, work: work.text, address: address, country: country, lat: lat!, lon: lon!, state: state, pic: pic);
               await usersCollection.doc(h).set(hj.toJson());
@@ -206,10 +212,10 @@ class _Step1State extends State<Step1> {
             }else{
               print("uawe");
               String t = DateTime.now().toString();
-              UserModel hj = UserModel(Email: " ", Name: name.text,
+              UserModel hj = UserModel(Email: " ", Name: name.text, token : "",
                   uid: h, smoke: smoke, bday: _singleDatePickerValueWithDefaultValue[0].toString(), premium : false , phone : widget.phone,
                   weight: weight.text, height: height.text, follower: [], following: [],
-                  education: education.text, drink: drinkk, gender: gen,
+                  education: education.text, drink: drinkk, gender: gen,lastp:"",
                   hobbies: l5, looking: looki, online : true, lastlogin : t,
                   s1 : " ", s2 : " ", s3 : " " , s4 : " ", s5 : " ", age1 : 18.0, age2 : 35.0, distance : 500,
                   relationship: goall, work: work.text, address: address, country: country, lat: lat!, lon: lon!, state: state, pic: pic);
@@ -241,6 +247,14 @@ class _Step1State extends State<Step1> {
           setState((){
             going = false ;
           });
+        } else{
+          ScaffoldMessenger.of(context)
+              .showSnackBar(
+            SnackBar(
+              content: Text('Name & Picture is Required !'),
+              duration: Duration(seconds: 3),
+            ),
+          );
         }
       },
       child: Padding(

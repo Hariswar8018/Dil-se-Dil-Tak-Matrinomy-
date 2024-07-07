@@ -7,44 +7,6 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:396243406354:android:6c28683114e788fede12cb",
-        "android_client_info": {
-          "package_name": "com.heavenonthisearth.dil_se_dil_tak"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDanG5nODR1XMJE9vcmX5WKw8TP6E1XOSQ"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:396243406354:android:2edf437b736b50a7de12cb",
-        "android_client_info": {
-          "package_name": "com.heavenonthisearth.dil_se_dil_takk"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDanG5nODR1XMJE9vcmX5WKw8TP6E1XOSQ"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:396243406354:android:e2cb11d9a5195886de12cb",
         "android_client_info": {
           "package_name": "com.heavenonthisearth.matrinomy"
@@ -54,6 +16,9 @@
       "api_key": [
         {
           "current_key": "AIzaSyDanG5nODR1XMJE9vcmX5WKw8TP6E1XOSQ"
+        },
+        {
+          "current_key": "AIzaSyA0C9MOLvLUst1r7WDPTQl999a2NiGRpvk"
         }
       ],
       "services": {
@@ -73,6 +38,9 @@
       "api_key": [
         {
           "current_key": "AIzaSyDanG5nODR1XMJE9vcmX5WKw8TP6E1XOSQ"
+        },
+        {
+          "current_key": "AIzaSyA0C9MOLvLUst1r7WDPTQl999a2NiGRpvk"
         }
       ],
       "services": {

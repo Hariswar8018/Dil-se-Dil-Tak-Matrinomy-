@@ -1,5 +1,19 @@
 import 'dart:math';
+import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:intl/intl.dart';
+import 'package:matrinomy/cards/meessagecard.dart';
+import 'package:matrinomy/global/drawer.dart';
+import 'package:matrinomy/main_page/premium.dart';
+import 'package:matrinomy/provider/declare.dart';
+import 'package:provider/provider.dart';
 
+import '../model/usermodel.dart';
+import '../model/messagw.dart';
+import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -17,9 +31,10 @@ import 'package:matrinomy/provider/declare.dart';
 
 import '../model/usermodel.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
-
+import 'package:matrinomy/ads.dart' ;
 import 'filter.dart';
-
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:matrinomy/g.dart' ;
 class Home extends StatefulWidget {
   Home({super.key});
 
@@ -31,7 +46,10 @@ class _HomeState extends State<Home> {
   vq() async {
     UserProvider _userprovider = Provider.of(context, listen: false);
     await _userprovider.refreshuser();
+    String uuu = FirebaseAuth.instance.currentUser!.uid ;
+    UserService.saveToken(uuu);
   }
+
 
   void initState() {
     vq();
@@ -55,18 +73,33 @@ class _HomeState extends State<Home> {
           break; // Stop the loop once we find the "premium" permission
         }
       }
-
+      UserModel? _user = Provider.of<UserProvider>(context, listen: false).getUser;
       if (!isPremium) {
-        await FirebaseFirestore.instance.collection("Users").doc(userId).update({
-          "p": false,
-        });
+        if(_user!.gender == "Female"){
+          await FirebaseFirestore.instance.collection("Users").doc(userId).update({
+            "p": true,
+          });
+        }else{
+          await FirebaseFirestore.instance.collection("Users").doc(userId).update({
+            "p": false,
+          });
+        }
+
       }
     } catch (e) {
       // Handle error
       print("Error while checking permissions: $e");
-      await FirebaseFirestore.instance.collection("Users").doc(userId).update({
-        "p": false,
-      });
+      UserModel? _user = Provider.of<UserProvider>(context, listen: false).getUser;
+      if(_user!.gender=="Female"){
+        await FirebaseFirestore.instance.collection("Users").doc(userId).update({
+          "p": true,
+        });
+      }else{
+        await FirebaseFirestore.instance.collection("Users").doc(userId).update({
+          "p": false,
+        });
+      }
+
     }
 
     // Refresh user using UserProvider
@@ -259,12 +292,19 @@ class _HomeState extends State<Home> {
                   child: IconButton(
                     onPressed: () {
                       if (_list.isNotEmpty) {
+                        if(check()){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ChatPage(user: _list.elementAt(indexx)),
+                            ),
+                          );
+                      }else{
                         Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ChatPage(user: _list.elementAt(indexx)),
-                          ),
-                        );
+                            context, PageTransition(
+                            child: Premium(), type: PageTransitionType.leftToRight, duration: Duration(milliseconds: 100)
+                        ));
+                      }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -301,6 +341,28 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+  void vqt() async {
+    UserProvider _userprovider = Provider.of(context, listen: false);
+    await _userprovider.refreshuser();
+  }
+
+  bool check(){
+    vqt();
+    UserModel? _user = Provider.of<UserProvider>(context, listen: false).getUser;
+    if(_user!.premium){
+      return true;
+    }else{
+      try {
+        DateTime storedDateTime = DateTime.parse(_user!.lastp);
+        DateTime currentDateTime = DateTime.now();
+        print("$storedDateTime $currentDateTime");
+        Duration difference = currentDateTime.difference(storedDateTime);
+        return difference.inMinutes <= 30;
+      }catch(e){
+        return  false;
+      }
+    }
+  }
 
   int cal(String dateString) {
     try {
@@ -326,14 +388,12 @@ class _HomeState extends State<Home> {
     } else {
       indexx += 1;
     }
-    debugPrint('The card $previousIndex was swiped to the ${direction.name}. Now the card $currentIndex is on top');
     return true;
   }
 
   bool _onUndo(int? previousIndex, int currentIndex, CardSwiperDirection direction) {
     indexx = 0;
     setState(() {});
-    debugPrint('The card $currentIndex was undod from the ${direction.name}');
     return true;
   }
 

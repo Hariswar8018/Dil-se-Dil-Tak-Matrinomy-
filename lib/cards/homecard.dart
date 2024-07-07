@@ -112,7 +112,7 @@ class ChatUser extends StatelessWidget {
   String sty (){
     if(user.gender == "Male"){
       return "♂️";
-    }else  if(user.gender == "Male"){
+    }else  if(user.gender == "Female"){
       return "♀️";
     }else{
       return "‍⚧️";
