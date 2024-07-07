@@ -95,7 +95,7 @@ class _MyPState extends State<MyP> {
             g(_user.work, "Work", "work", false),
             g(_user.smoke, "Smoke", "smoke", false),
             g(_user.drink, "Drinking", "drink", false),
-            g(_user.looking, "Looking", "looking", false),
+            g1(_user.looking, "Looking", "looking", false),
             g(_user.height, "Height", "height", true),
             g(_user.weight, "Weight", "weight", true),
             SizedBox(height: 30,),

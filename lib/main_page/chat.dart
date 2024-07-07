@@ -3,6 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 import 'package:matrinomy/cards/meessagecard.dart';
 import 'package:matrinomy/global/drawer.dart';
+import 'package:matrinomy/main_page/premium.dart';
+import 'package:matrinomy/provider/declare.dart';
+import 'package:provider/provider.dart';
 
 import '../model/usermodel.dart';
 import '../model/messagw.dart';
@@ -90,9 +93,6 @@ class ChatState extends State<Chat> {
 
 
 
-
-
-
 class ChatUser extends StatefulWidget {
 
   final UserModel user;
@@ -102,17 +102,41 @@ class ChatUser extends StatefulWidget {
 }
 class ChatUserState extends State<ChatUser> {
 
+  vq() async {
+    UserProvider _userprovider = Provider.of(context, listen: false);
+    await _userprovider.refreshuser();
+  }
 
+  bool check(){
+    vq();
+    UserModel? _user = Provider.of<UserProvider>(context, listen: false).getUser;
+    if(_user!.premium){
+      return true;
+    }else{
+      DateTime storedDateTime = DateTime.parse(_user!.lastp);
+      DateTime currentDateTime = DateTime.now();
+      print("$storedDateTime $currentDateTime");
+      Duration difference = currentDateTime.difference(storedDateTime);
+      return difference.inMinutes <= 30;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        Navigator.push(
-            context, PageTransition(
-            child: ChatPage(user: widget.user,), type: PageTransitionType.topToBottom, duration: Duration(milliseconds: 800)
+        if(check()){
+          Navigator.push(
+              context, PageTransition(
+              child: ChatPage(user: widget.user,), type: PageTransitionType.rightToLeft, duration: Duration(milliseconds: 400)
+          ));
+        }else{
+          Navigator.push(
+              context, PageTransition(
+              child: Premium(), type: PageTransitionType.leftToRight, duration: Duration(milliseconds: 100)
+          ));
+        }
 
-        ));
         String g = DateTime.now().toString();
         await FirebaseFirestore.instance.collection("Users").doc(FirebaseAuth.instance.currentUser!.uid).update(
             {

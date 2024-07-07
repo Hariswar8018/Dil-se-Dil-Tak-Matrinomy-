@@ -27,7 +27,7 @@ class Step1 extends StatefulWidget {
 class _Step1State extends State<Step1> {
 
   List l5 = [];
-  String drinkk = " ", smoke = " ", goall = " ", gen = " " , looki = " ", pic = " ";
+  String drinkk = " ", smoke = " ", goall = "Male", gen = "Male" , looki = "Male", pic = "";
 
  int activeStep = 0; // Initial step set to 5.
  int upperBound = 6; // upperBound MUST BE total number of icons minus 1.
@@ -42,38 +42,42 @@ class _Step1State extends State<Step1> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              IconStepper(
-                icons: [
-                  Icon(Icons.face, color : activeStep == 0 ? Colors.white : Colors.black),
-                  Icon(Icons.work, color : activeStep == 1 ? Colors.white : Colors.black),
-                  Icon(Icons.monitor_weight, color : activeStep == 2 ? Colors.white : Colors.black),
-                  Icon(Icons.cake, color : activeStep == 3 ? Colors.white : Colors.black),
-                  Icon(Icons.volunteer_activism, color : activeStep == 4 ? Colors.white : Colors.black),
-                  Icon(Icons.local_drink, color : activeStep == 5 ? Colors.white : Colors.black),
-                  Icon(Icons.gpp_good, color : activeStep == 6 ? Colors.white : Colors.black),
-                ],
-                activeStep: activeStep,stepColor: Colors.grey.shade200, activeStepColor: Color(0xffE9075B),
-                onStepReached: (index) {
-                  setState(() {
-                    activeStep = index;
-                  });
-                },
-              ),
-              header(),
-              s(context),
-              Spacer(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  previousButton(),
-                  nextButton(),
-                ],
-              ),
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                IconStepper(
+                  icons: [
+                    Icon(Icons.face, color : activeStep == 0 ? Colors.white : Colors.black),
+                    Icon(Icons.work, color : activeStep == 1 ? Colors.white : Colors.black),
+                    Icon(Icons.monitor_weight, color : activeStep == 2 ? Colors.white : Colors.black),
+                    Icon(Icons.cake, color : activeStep == 3 ? Colors.white : Colors.black),
+                    Icon(Icons.volunteer_activism, color : activeStep == 4 ? Colors.white : Colors.black),
+                    Icon(Icons.local_drink, color : activeStep == 5 ? Colors.white : Colors.black),
+                    Icon(Icons.gpp_good, color : activeStep == 6 ? Colors.white : Colors.black),
+                  ],
+                  activeStep: activeStep,stepColor: Colors.grey.shade200, activeStepColor: Color(0xffE9075B),
+                  onStepReached: (index) {
+                    setState(() {
+                      activeStep = index;
+                    });
+                  },
+                ),
+                header(),
+                s(context),
+            
+              ],
+            ),
           ),
         ),
+        persistentFooterButtons: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              previousButton(),
+              nextButton(),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -157,6 +161,11 @@ class _Step1State extends State<Step1> {
   }
   /// Returns the next button
   bool going = false ;
+
+  bool checkin(){
+    return name.text.isNotEmpty && pic.isNotEmpty ;
+  }
+
   Widget nextButton() {
     return InkWell(
       onTap: ()  async {
@@ -168,7 +177,8 @@ class _Step1State extends State<Step1> {
           setState(() {
             activeStep ++ ;
           });
-        }else {
+        }
+        else if (checkin()){
           CollectionReference usersCollection = FirebaseFirestore.instance.collection('Users');
           String h = FirebaseAuth.instance.currentUser!.uid ;
           print("No");
@@ -189,11 +199,11 @@ class _Step1State extends State<Step1> {
               print("User's address: $address");
               print("uawe");
               String t = DateTime.now().toString();
-              UserModel hj = UserModel(Email: " ", Name: name.text,
+              UserModel hj = UserModel(Email: " ", Name: name.text, token : "",
                   uid: h, smoke: smoke, bday: _singleDatePickerValueWithDefaultValue[0].toString(), premium : false , phone : widget.phone,
                   weight: weight.text, height: height.text, follower: [], following: [],
-                  education: education.text, drink: drinkk, gender: gen,
-                  hobbies: l5, looking: looki, online : true, lastlogin : t,
+                  education: education.text, drink: drinkk, gender: gen,lastp:"2024-06-27 16:48:31.164244",
+                  hobbies: l5, looking: looki, online : true, lastlogin : "2024-06-27 16:48:31.164244",
                   s1 : " ", s2 : " ", s3 : " " , s4 : " ", s5 : " ", age1 : 18.0, age2 : 35.0, distance : 500,
                   relationship: goall, work: work.text, address: address, country: country, lat: lat!, lon: lon!, state: state, pic: pic);
               await usersCollection.doc(h).set(hj.toJson());
@@ -206,10 +216,10 @@ class _Step1State extends State<Step1> {
             }else{
               print("uawe");
               String t = DateTime.now().toString();
-              UserModel hj = UserModel(Email: " ", Name: name.text,
+              UserModel hj = UserModel(Email: " ", Name: name.text, token : "",
                   uid: h, smoke: smoke, bday: _singleDatePickerValueWithDefaultValue[0].toString(), premium : false , phone : widget.phone,
                   weight: weight.text, height: height.text, follower: [], following: [],
-                  education: education.text, drink: drinkk, gender: gen,
+                  education: education.text, drink: drinkk, gender: gen,lastp:"",
                   hobbies: l5, looking: looki, online : true, lastlogin : t,
                   s1 : " ", s2 : " ", s3 : " " , s4 : " ", s5 : " ", age1 : 18.0, age2 : 35.0, distance : 500,
                   relationship: goall, work: work.text, address: address, country: country, lat: lat!, lon: lon!, state: state, pic: pic);
@@ -241,6 +251,14 @@ class _Step1State extends State<Step1> {
           setState((){
             going = false ;
           });
+        } else{
+          ScaffoldMessenger.of(context)
+              .showSnackBar(
+            SnackBar(
+              content: Text('Name & Picture is Required !'),
+              duration: Duration(seconds: 3),
+            ),
+          );
         }
       },
       child: Padding(
@@ -286,14 +304,11 @@ class _Step1State extends State<Step1> {
           });
         }
       },
-      child: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Center(
-          child: CircleAvatar(
-            radius: 25,
-            backgroundColor: Color(0xffE9075B),
-            child: Icon(Icons.arrow_back, color : Colors.white),
-          ),
+      child: Center(
+        child: CircleAvatar(
+          radius: 25,
+          backgroundColor: Color(0xffE9075B),
+          child: Icon(Icons.arrow_back, color : Colors.white),
         ),
       ),
     );
@@ -362,7 +377,7 @@ class _Step1State extends State<Step1> {
           t1("Your Picture"),
           t2("Your Profile Picture for Display. You could add 5 more Later !"),
           SizedBox(height : 7),
-          send1 ? Center(child: CircularProgressIndicator()) : InkWell(
+          send1 ? Center(child: CircularProgressIndicator()) :InkWell(
             onTap: () async {
               setState((){
                 send1 = true ;
@@ -383,11 +398,11 @@ class _Step1State extends State<Step1> {
                 send1 = false ;
               });
             },
-            child: pic == " "? Container(
+            child: pic == ""? Container(
               height:  170, width:  140,
               color : Colors.grey.shade300,
-              child : Icon(Icons.camera_alt)
-            ) : Container(
+              child : Icon(Icons.camera_alt,color:Colors.black)
+            ) :  Container(
                 height:  170, width:  140,
                 decoration: BoxDecoration(
                   image: DecorationImage(
@@ -714,7 +729,7 @@ class _Step1State extends State<Step1> {
         ),
         child : Padding(
           padding: const EdgeInsets.all(10.0),
-          child: Text(jh, style : TextStyle(fontSize: 19, color : l5.contains(jh) ? Colors.white : Colors.black )),
+          child: Text(jh, style : TextStyle(fontSize: 15, color : l5.contains(jh) ? Colors.white : Colors.black )),
         )
             ),
       )
@@ -808,7 +823,7 @@ class _Step1State extends State<Step1> {
             ),
             child : Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Text(jh, style : TextStyle(fontSize: 19, color : smoke == jh ? Colors.white : Colors.black )),
+              child: Text(jh, style : TextStyle(fontSize: 15, color : smoke == jh ? Colors.white : Colors.black )),
             )
         ),
       )
@@ -828,7 +843,7 @@ class _Step1State extends State<Step1> {
             ),
             child : Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Text(jh, style : TextStyle(fontSize: 19, color : drinkk == jh ? Colors.white : Colors.black )),
+              child: Text(jh, style : TextStyle(fontSize: 15, color : drinkk == jh ? Colors.white : Colors.black )),
             )
         ),
       )
@@ -848,7 +863,7 @@ class _Step1State extends State<Step1> {
             ),
             child : Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Text(jh, style : TextStyle(fontSize: 19, color : goall == jh ? Colors.white : Colors.black )),
+              child: Text(jh, style : TextStyle(fontSize: 15, color : goall == jh ? Colors.white : Colors.black )),
             )
         ),
       )
@@ -868,7 +883,7 @@ class _Step1State extends State<Step1> {
             ),
             child : Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Text(jh, style : TextStyle(fontSize: 19, color : gen == jh ? Colors.white : Colors.black )),
+              child: Text(jh, style : TextStyle(fontSize: 15, color : gen == jh ? Colors.white : Colors.black )),
             )
         ),
       )
@@ -888,7 +903,7 @@ class _Step1State extends State<Step1> {
             ),
             child : Padding(
               padding: const EdgeInsets.all(10.0),
-              child: Text(jh, style : TextStyle(fontSize: 19, color : looki == jh ? Colors.white : Colors.black )),
+              child: Text(jh, style : TextStyle(fontSize: 15, color : looki == jh ? Colors.white : Colors.black )),
             )
         ),
       )
@@ -910,10 +925,10 @@ class _Step1State extends State<Step1> {
  TextEditingController work = TextEditingController();
 
   Widget t1(String g){
-    return Text(g, style : TextStyle(fontSize: 27, fontWeight: FontWeight.w700));
+    return Text(g, style : TextStyle(fontSize: 25, fontWeight: FontWeight.w700));
   }
  Widget t2(String g){
-   return Text(g, style : TextStyle(fontSize: 18, fontWeight: FontWeight.w300));
+   return Text(g, style : TextStyle(fontSize: 16, fontWeight: FontWeight.w300));
  }
 
   String _getValueText(

@@ -30,9 +30,10 @@ class UserModel {
     required this.lastlogin,
     required this.online,
     required this.follower,
+    required this.lastp,
     required this.following,
     required this.premium, required this.distance, required this.age1, required this.age2,
-    required this.phone,
+    required this.phone,required this.token,
   });
   late final String lastlogin ;
   late final bool online ;
@@ -47,6 +48,7 @@ class UserModel {
   late final String work ;
   late final String height ;
   late final String weight ;
+  late final String lastp;
   late final String bday ;
   late final String gender ;
   late final String looking ;
@@ -68,14 +70,17 @@ class UserModel {
   late  double distance ;
   late  double age1 ;
   late  double age2 ;
+  late String token ;
 
   UserModel.fromJson(Map<String, dynamic> json) {
+    token = json['token'] ??"";
     phone = json['phone'] ?? "7978097489";
     distance  = json['dis'] ?? 170.0 ;
     age1 = json['age1'] ?? 18.0;
     age2 = json['age2'] ?? 35.0;
     s1 = json['s1'] ?? " ";
     s2 = json['s2'] ?? " ";
+    lastp=json['LastP'] ??"2024-06-27 09:08:18.432554";
     s3 = json['s3'] ?? " ";
     s4 = json['s4'] ?? " ";
     s5 = json['s5'] ?? " ";
@@ -109,9 +114,11 @@ class UserModel {
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['p'] = premium ;
+    data['token']=token;
     data['phone'] = phone ;
     data['Followers']  = follower ;
     data['following'] = following ;
+    data['LastP']=lastp;
     data['lat'] = lat ;
     data['lon']= lon  ;
      data['country'] = country ;

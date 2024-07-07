@@ -1,5 +1,21 @@
 import 'dart:math';
+import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:intl/intl.dart';
+import 'package:matrinomy/cards/meessagecard.dart';
+import 'package:matrinomy/global/drawer.dart';
+import 'package:matrinomy/main_page/premium.dart';
+import 'package:matrinomy/provider/declare.dart';
+import 'package:provider/provider.dart';
 
+import '../model/usermodel.dart';
+import '../model/messagw.dart';
+import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -17,9 +33,10 @@ import 'package:matrinomy/provider/declare.dart';
 
 import '../model/usermodel.dart';
 import 'package:flutter_card_swiper/flutter_card_swiper.dart';
-
+import 'package:matrinomy/ads.dart' ;
 import 'filter.dart';
-
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:matrinomy/g.dart' ;
 class Home extends StatefulWidget {
   Home({super.key});
 
@@ -31,12 +48,90 @@ class _HomeState extends State<Home> {
   vq() async {
     UserProvider _userprovider = Provider.of(context, listen: false);
     await _userprovider.refreshuser();
+    String uuu = FirebaseAuth.instance.currentUser!.uid ;
+    UserService.saveToken(uuu);
+  }
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  void fg() async{
+    const AndroidInitializationSettings initializationSettingsAndroid =
+    AndroidInitializationSettings('@mipmap/ic_launcher');
+    const InitializationSettings initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+    );
+
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print("Received message in foreground: ${message.notification?.title}");
+      _showNotification(message);
+    });
+  }
+
+  Future<void> _showNotification(RemoteMessage message) async {
+    try {
+      const AndroidNotificationDetails androidPlatformChannelSpecifics = AndroidNotificationDetails(
+        'your_channel_id', // Unique channel ID
+        'your_channel_name', // User-friendly channel name
+        channelDescription: 'Your channel description', // Description of the channel
+        importance: Importance.max,
+        priority: Priority.high,
+        showWhen: false,
+      );
+
+      const NotificationDetails platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics);
+
+      // Using a unique ID for each notification
+      int notificationId = DateTime.now().millisecondsSinceEpoch.remainder(100000); // Unique ID based on timestamp
+
+      await flutterLocalNotificationsPlugin.show(
+        notificationId, // Unique Notification ID
+        message.notification?.title, // Notification title
+        message.notification?.body, // Notification body
+        platformChannelSpecifics, // Platform-specific settings
+        payload: 'item x', // Payload to handle on tap
+      );
+    } catch (e) {
+      print("Error showing notification: $e");
+    }
+  }
+
+  static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+    print(":gg");
+    // Handle background message
+  }
+  void g() async{
+    try {
+      final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+      CollectionReference collection =
+      FirebaseFirestore.instance.collection('Users');
+      FirebaseMessaging.onBackgroundMessage(
+          _firebaseMessagingBackgroundHandler);
+      String? token = await _firebaseMessaging.getToken();
+      print(token);
+      if (token != null) {
+        print(token);
+        try {
+          await collection.doc(FirebaseAuth.instance.currentUser!.uid).update({
+            'token': token,
+          });
+          print("UUUUUUUUUUUUUUU");
+        }catch(e){
+          print("XXXXXXXXXXXXXXXXXXXXXXXXXX");
+          print(e);
+        }
+        _firebaseMessaging.requestPermission();
+      }
+    }catch(e){
+      print(e);    }
   }
 
   void initState() {
     vq();
     super.initState();
     vq();
+    fg();
+    g();
     ft();
   }
   void ft( ) async {
@@ -55,18 +150,33 @@ class _HomeState extends State<Home> {
           break; // Stop the loop once we find the "premium" permission
         }
       }
-
+      UserModel? _user = Provider.of<UserProvider>(context, listen: false).getUser;
       if (!isPremium) {
-        await FirebaseFirestore.instance.collection("Users").doc(userId).update({
-          "p": false,
-        });
+        if(_user!.gender == "Female"){
+          await FirebaseFirestore.instance.collection("Users").doc(userId).update({
+            "p": true,
+          });
+        }else{
+          await FirebaseFirestore.instance.collection("Users").doc(userId).update({
+            "p": false,
+          });
+        }
+
       }
     } catch (e) {
       // Handle error
       print("Error while checking permissions: $e");
-      await FirebaseFirestore.instance.collection("Users").doc(userId).update({
-        "p": false,
-      });
+      UserModel? _user = Provider.of<UserProvider>(context, listen: false).getUser;
+      if(_user!.gender=="Female"){
+        await FirebaseFirestore.instance.collection("Users").doc(userId).update({
+          "p": true,
+        });
+      }else{
+        await FirebaseFirestore.instance.collection("Users").doc(userId).update({
+          "p": false,
+        });
+      }
+
     }
 
     // Refresh user using UserProvider
@@ -171,7 +281,6 @@ class _HomeState extends State<Home> {
                         return distance < _user.distance && cal(user.bday) > _user.age1 && cal(user.bday) < _user.age2 && user.gender == _user.looking;
                       }
                     }).toList();
-
                     if (_list.isEmpty) {
                       return Center(
                         child: Column(
@@ -259,12 +368,19 @@ class _HomeState extends State<Home> {
                   child: IconButton(
                     onPressed: () {
                       if (_list.isNotEmpty) {
+                        if(check()){
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ChatPage(user: _list.elementAt(indexx)),
+                            ),
+                          );
+                      }else{
                         Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ChatPage(user: _list.elementAt(indexx)),
-                          ),
-                        );
+                            context, PageTransition(
+                            child: Premium(), type: PageTransitionType.leftToRight, duration: Duration(milliseconds: 100)
+                        ));
+                      }
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -301,6 +417,28 @@ class _HomeState extends State<Home> {
       ),
     );
   }
+  void vqt() async {
+    UserProvider _userprovider = Provider.of(context, listen: false);
+    await _userprovider.refreshuser();
+  }
+
+  bool check(){
+    vqt();
+    UserModel? _user = Provider.of<UserProvider>(context, listen: false).getUser;
+    if(_user!.premium){
+      return true;
+    }else{
+      try {
+        DateTime storedDateTime = DateTime.parse(_user!.lastp);
+        DateTime currentDateTime = DateTime.now();
+        print("$storedDateTime $currentDateTime");
+        Duration difference = currentDateTime.difference(storedDateTime);
+        return difference.inMinutes <= 30;
+      }catch(e){
+        return  false;
+      }
+    }
+  }
 
   int cal(String dateString) {
     try {
@@ -326,14 +464,12 @@ class _HomeState extends State<Home> {
     } else {
       indexx += 1;
     }
-    debugPrint('The card $previousIndex was swiped to the ${direction.name}. Now the card $currentIndex is on top');
     return true;
   }
 
   bool _onUndo(int? previousIndex, int currentIndex, CardSwiperDirection direction) {
     indexx = 0;
     setState(() {});
-    debugPrint('The card $currentIndex was undod from the ${direction.name}');
     return true;
   }
 

@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'package:intl/intl.dart';
 import 'package:matrinomy/cards/chatbubble.dart';
 import 'package:matrinomy/cards/profile.dart';
+import 'package:matrinomy/global/notification.dart';
+import 'package:matrinomy/main_page/call/video.dart';
+import 'package:matrinomy/notify.dart';
 import 'package:provider/provider.dart';
 
 import '../main_page/premium.dart';
@@ -45,6 +48,11 @@ class _ChatPageState extends State<ChatPage> {
         {
           "Mess": FieldValue.arrayUnion([yu]),
         });
+    await FirebaseFirestore.instance.collection("Users").doc(widget.user.uid).update(
+        {
+          "Mess": FieldValue.arrayUnion([yu]),
+        });
+    String userToken = widget.user.token;
   }
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getAllMessages(UserModel user3){
@@ -57,7 +65,6 @@ class _ChatPageState extends State<ChatPage> {
 
   @override
   Widget build(BuildContext context) {
-    UserModel? _user = Provider.of<UserProvider>(context).getUser;
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -107,7 +114,7 @@ class _ChatPageState extends State<ChatPage> {
                   },
                 ),
               ),
-              _user!.premium? _ChatInput() : _ChatInputt(),
+              _ChatInput(),
             ],
           ),
         ),
@@ -116,6 +123,7 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   Widget _AppBar() {
+
     return InkWell(
       onTap: (){
         Navigator.push(
@@ -146,11 +154,59 @@ class _ChatPageState extends State<ChatPage> {
               Text("Last Seen : " + fo(widget.user.lastlogin)),
             ],
           ),
+          Spacer(),
+          IconButton(onPressed: (){
+            showYesNoDialog( context,false);
+          }, icon: Icon(Icons.add_call,size:35,color:Colors.green)),
+          SizedBox(width: 5),
+          IconButton(onPressed: (){
+            showYesNoDialog( context,true);
+          }, icon: Icon(Icons.video_call,size:35,color:Colors.blue)),
+          SizedBox(width: 10),
         ],
       ),
     );
   }
+  void showYesNoDialog(BuildContext context,bool video) {
+    UserModel? _user = Provider.of<UserProvider>(context,listen: false).getUser;
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(video?'Confirmat to Video Call?':'Confirmat to Voice Call?'),
+          content: Text('You have maximum 10 Minutes for each video/voice call session. Confirm to Call? The Other user should also select on Video/Voice Call Icon'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                print('User selected No');
+              },
+              child: Text('No'),
+            ),
+            TextButton(
+              onPressed: () {
+                js();
+                Navigator.of(context).pop();
+                Navigator.push(
+                    context,
+                    PageTransition(
+                        child: Zegoc(my:_user!, them: widget.user,video:video),
+                        type: PageTransitionType.topToBottom,
+                        duration: Duration(milliseconds: 800)));
+              },
+              child: Text('Yes'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
+
+  void js(){
+    Send.sendNotificationsToTokens(widget.user.Name+" is Calling you","Go to Video Call to Accept the Call Fast", widget.user.token);
+
+  }
   Widget _ChatInput() {
     String s  = " ";
     return Row(
@@ -186,6 +242,7 @@ class _ChatPageState extends State<ChatPage> {
           onPressed: () async {
             if (s.isNotEmpty) {
               sendMessage(widget.user , textcon.text);
+              as(textcon.text);
               setState(() {
                 s = " ";
                 textcon = TextEditingController(text: "");
@@ -199,6 +256,10 @@ class _ChatPageState extends State<ChatPage> {
     );
   }
 
+  void as(String xx){
+    Send.sendNotificationsToTokens(widget.user.Name+" had sent you message",xx, widget.user.token);
+
+  }
   Widget _ChatInputt() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,

@@ -9,11 +9,13 @@ import 'package:matrinomy/first/login.dart';
 import 'package:matrinomy/main_page/main_page.dart';
 import 'package:matrinomy/provider/declare.dart' ;
 import 'package:glassfy_flutter/glassfy_flutter.dart' ;
+import 'package:flutter_card_swiper/flutter_card_swiper.dart';
+import 'package:matrinomy/ads.dart' ;
 
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp(); //initilization of Firebase app
   try {
     await Glassfy.initialize('ef3556dfa53840739475484c1bb48d23',watcherMode: false);
   } catch (e) {
@@ -22,6 +24,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   runApp(
       MyApp()
   );

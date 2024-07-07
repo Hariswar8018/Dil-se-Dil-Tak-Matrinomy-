@@ -7,58 +7,64 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:396243406354:android:6c28683114e788fede12cb",
-        "android_client_info": {
-          "package_name": "com.heavenonthisearth.dil_se_dil_tak"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDanG5nODR1XMJE9vcmX5WKw8TP6E1XOSQ"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:396243406354:android:2edf437b736b50a7de12cb",
-        "android_client_info": {
-          "package_name": "com.heavenonthisearth.dil_se_dil_takk"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyDanG5nODR1XMJE9vcmX5WKw8TP6E1XOSQ"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:396243406354:android:e2cb11d9a5195886de12cb",
         "android_client_info": {
           "package_name": "com.heavenonthisearth.matrinomy"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "396243406354-9oom54rmf9pc307v36fupoch1suib4dp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.heavenonthisearth.matrinomy",
+            "certificate_hash": "a3226326da87596c5419e875cf5ad898dfdb3899"
+          }
+        },
+        {
+          "client_id": "396243406354-c4b2g42n87p437497v7fmqq73d5f3jk1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.heavenonthisearth.matrinomy",
+            "certificate_hash": "c309cfd2d2fffc93a1dce3685655b49e8a0bb963"
+          }
+        },
+        {
+          "client_id": "396243406354-phanhpm2bpvk3ek8fgbo8qcjs53i1bt7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.heavenonthisearth.matrinomy",
+            "certificate_hash": "e4f34831ab4d56617247a7121a0aa6dcceb2ddf0"
+          }
+        },
+        {
+          "client_id": "396243406354-7ri9bafvjr2qdckg91c0tvbp9m5tf2tr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDanG5nODR1XMJE9vcmX5WKw8TP6E1XOSQ"
+        },
+        {
+          "current_key": "AIzaSyA0C9MOLvLUst1r7WDPTQl999a2NiGRpvk"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "396243406354-7ri9bafvjr2qdckg91c0tvbp9m5tf2tr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "396243406354-bntr95prju5866v2m8ailc7ptkmos8cb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.heavenonthisearth.matrinomy"
+              }
+            }
+          ]
         }
       }
     },
@@ -69,15 +75,59 @@
           "package_name": "com.heavenonthisearth.zhilki"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "396243406354-go2ikjkn55236ehfcvup4277rg0qgo4d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.heavenonthisearth.zhilki",
+            "certificate_hash": "a3226326da87596c5419e875cf5ad898dfdb3899"
+          }
+        },
+        {
+          "client_id": "396243406354-j06ojv377c0pho87n3ro8gn34789ib21.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.heavenonthisearth.zhilki",
+            "certificate_hash": "50f78c17a21508489d88ea48c16ca7d25428b4d5"
+          }
+        },
+        {
+          "client_id": "396243406354-p0r36611id5f4r8gid9p5u0vt4pufvk7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.heavenonthisearth.zhilki",
+            "certificate_hash": "c309cfd2d2fffc93a1dce3685655b49e8a0bb963"
+          }
+        },
+        {
+          "client_id": "396243406354-7ri9bafvjr2qdckg91c0tvbp9m5tf2tr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDanG5nODR1XMJE9vcmX5WKw8TP6E1XOSQ"
+        },
+        {
+          "current_key": "AIzaSyA0C9MOLvLUst1r7WDPTQl999a2NiGRpvk"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "396243406354-7ri9bafvjr2qdckg91c0tvbp9m5tf2tr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "396243406354-bntr95prju5866v2m8ailc7ptkmos8cb.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.heavenonthisearth.matrinomy"
+              }
+            }
+          ]
         }
       }
     }

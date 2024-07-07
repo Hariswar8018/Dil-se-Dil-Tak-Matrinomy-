@@ -1,3 +1,17 @@
+buildscript {
+    ext.kotlin_version = '1.8.0' // Ensure this matches the Kotlin version
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.android.tools.build:gradle:8.0.1' // Updated to latest
+        classpath 'com.google.gms:google-services:4.3.15'
+        classpath 'com.google.firebase:firebase-firestore:24.7.0'
+    }
+}
+
 
 allprojects {
     repositories {
@@ -7,11 +21,11 @@ allprojects {
 }
 
 rootProject.buildDir = "../build"
+
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
-}
-subprojects {
     project.evaluationDependsOn(":app")
+
 }
 
 tasks.register("clean", Delete) {

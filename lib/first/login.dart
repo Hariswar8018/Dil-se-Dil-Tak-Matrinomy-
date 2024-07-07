@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:matrinomy/first/step/info.dart';
+import 'package:matrinomy/global/notification.dart';
 
 import 'package:otp_text_field_v2/otp_field_v2.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -206,7 +209,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                         .showSnackBar(
                                       SnackBar(
                                         content:
-                                        Text('Verification Failed '),
+                                        Text('${e}'),
                                         duration: Duration(seconds: 3),
                                       ),
                                     );
@@ -248,7 +251,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                         'Auto Retrieval Timeout. Verification ID: $verificationId');
                                   },
                                 );
+                            setState((){
+                              round = false ;
+                            });
                               } catch (e) {
+                            setState((){
+                              round = false ;
+                            });
                                 print(
                                     'Error sending verification code: $e');
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -259,6 +268,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 );
                               }
                             } else {
+                          setState((){
+                            round = false ;
+                          });
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text('Type 10 digit number'),
@@ -266,21 +278,104 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               );
                             }
-                        setState((){
-                          round = false ;
-                        });
+
                           }),
                     ),
                     SizedBox(
                       height: 10,
                     ),
+              Center(child: Text("OR")),
+              SizedBox(
+                height: 10,
+              ),
+              round ? Center(child: CircularProgressIndicator()) :  Padding(
+                padding: const EdgeInsets.only(left: 18.0, right: 18),
+                child: SocialLoginButton(
+                    backgroundColor: Colors.blue.shade100,
+                    height: 40,
+                    text: 'Login by Google',
+                    borderRadius: 20,
+                    fontSize: 21,
+                    buttonType: SocialLoginButtonType.google,
+                    onPressed: () async {
+                      setState((){
+                        round = true ;
+                      });
+                      try {
+                        final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+                        final GoogleSignInAuthentication googleAuth = await googleUser!
+                            .authentication;
+                        final AuthCredential credential = GoogleAuthProvider
+                            .credential(
+                          accessToken: googleAuth.accessToken,
+                          idToken: googleAuth.idToken,
+                        );
+                        await FirebaseAuth.instance.signInWithCredential(credential);
+                        String uid= await FirebaseAuth.instance.currentUser!.uid;
+                        nowsend(uid);
+                        setState((){
+                          round =false ;
+                        });
+                      }catch(e){
+                        print(e);
+                        Send.message(context, "$e", false);
+                        setState((){
+                          round =false ;
+                        });
+                      }
+
+                    }),
+              ),
+              SizedBox(
+                height: 10,
+              ),
                   ],
           ),
         ),
       ),
     );
   }
+  void nowsend (String uid ) async {
+    String uidToSearch = uid; // Replace with the actual uid you want to search
 
+    UserModel? user2 = await getUserByUid(uidToSearch);
+
+    if (user2 != null) {
+      print("User found: His Name }");
+      await FirebaseFirestore.instance.collection("Users").doc(uid).update({
+        "phone" : "None",
+      });
+      Navigator.push(
+          context, PageTransition(
+          child: Home(), type: PageTransitionType.leftToRight, duration: Duration(milliseconds: 300)
+      ));
+    } else {
+      Navigator.push(
+          context, PageTransition(
+          child: Step1(phone : "NONE"), type: PageTransitionType.leftToRight, duration: Duration(milliseconds: 300)
+      ));
+    }
+  }
+  Future<UserModel?> getUserByUid(String uid) async {
+    try {
+      // Reference to the 'users' collection
+      CollectionReference usersCollection = FirebaseFirestore.instance.collection('Users');
+      // Query the collection based on uid
+      QuerySnapshot querySnapshot = await usersCollection.where('uid', isEqualTo: uid).get();
+      // Check if a document with the given uid exists
+      if (querySnapshot.docs.isNotEmpty) {
+        // Convert the document snapshot to a UserModel
+        UserModel user = UserModel.fromSnap(querySnapshot.docs.first);
+        return user;
+      } else {
+        // No document found with the given uid
+        return null;
+      }
+    } catch (e) {
+      print("Error fetching user by uid: $e");
+      return null;
+    }
+  }
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   void verifyPhoneNumber(String phoneNumber) async {
