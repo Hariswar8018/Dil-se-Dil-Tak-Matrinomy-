@@ -2,7 +2,7 @@
 
 ### **💖 Modern Matrimonial and Dating App**
 
-![unnamed (9)](https://github.com/user-attachments/assets/3e53c0ba-5e45-4e7b-ba9a-b5927c6fc2b8)
+![unnamed (7)](https://github.com/user-attachments/assets/cb0b026d-b9ce-4a7c-888f-0d70ef8800ab)
 
 ---
 
@@ -20,7 +20,7 @@
 
 ## **📱 App Overview**
 
-![unnamed (7)](https://github.com/user-attachments/assets/cb0b026d-b9ce-4a7c-888f-0d70ef8800ab)
+![unnamed (9)](https://github.com/user-attachments/assets/3e53c0ba-5e45-4e7b-ba9a-b5927c6fc2b8)
 
 **Dil se Dil Tak** is a unique platform that blends traditional matchmaking with modern dating features. With its seamless user interface and rich features, users can connect with others, fostering meaningful relationships.
 
